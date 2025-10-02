@@ -6,13 +6,20 @@ import MovieCard from "../../components/MovieCard/MovieCard"
 const Search = () => {
     const [movieName, setMovieName] = useState("")
     const [movies, setMovies] = useState(undefined)
+    const [error, setError] = useState(undefined)
 
     useEffect(() => {
         console.log(movies)
     }, [movies])
 
     const handleSearch = async () => {
+        setError("")
+        setMovies(undefined)
+
         try {
+            const trimmedMovieName = movieName.trim()
+            if(trimmedMovieName/length <= 0) return 
+
             const parameters = new URLSearchParams({
                 apikey: import.meta.env.VITE_OMDB_APIKEY, s: movieName, page: 1
             })
@@ -39,7 +46,7 @@ const Search = () => {
             </div>
 
             <div className="movie-grid">
-                {movies && movies.Search.map((movie) => <MovieCard {...movie} />)}
+                {movies && movies.Search.map((movie) => <MovieCard key={movie.imdbID} {...movie} />)}
                 {/* <div className="movie-card">
                     <div className="poster-container">
                         <img src="https://m.media-amazon.com/images/M/MV5BNzY3OWQ5NDktNWQ2OC00ZjdlLThkMmItMDhhNDk3NTFiZGU4XkEyXkFqcGc@._V1_SX300.jpg" alt="Joker">
