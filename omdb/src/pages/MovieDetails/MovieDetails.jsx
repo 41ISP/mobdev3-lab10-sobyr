@@ -8,22 +8,22 @@ const MovieDetails = () => {
     const [MovieDetails, setMovieDetails] = useState(undefined)
 
     useEffect(() => {
-         const handleSearch = async () => {
-       
+        const handleSearch = async () => {
+
             try {
 
-            const parameters = new URLSearchParams({
-                apikey: import.meta.env.VITE_OMDB_APIKEY, i: id
-            })
-            const res = await fetch(`https://www.omdbapi.com/?${parameters.toString()}`)
-            const json = await res.json()
-            console.log(json);
-            setMovieDetails(json) 
-            
-        } catch (err) {
-            console.error(err)
+                const parameters = new URLSearchParams({
+                    apikey: import.meta.env.VITE_OMDB_APIKEY, i: id
+                })
+                const res = await fetch(`https://www.omdbapi.com/?${parameters.toString()}`)
+                const json = await res.json()
+                console.log(json);
+                setMovieDetails(json)
+
+            } catch (err) {
+                console.error(err)
+            }
         }
-    }
         handleSearch()
     }, [])
 
@@ -31,43 +31,42 @@ const MovieDetails = () => {
         <div className="container">
             <Link to="/" className="back-button">← Back to Search</Link>
 
-            <div className="movie-detail-card">
+            {MovieDetails && <div className="movie-detail-card">
                 <div className="movie-header">
                     <div className="poster-section">
                         <img
                             src="https://m.media-amazon.com/images/M/MV5BNzY3OWQ5NDktNWQ2OC00ZjdlLThkMmItMDhhNDk3NTFiZGU4XkEyXkFqcGc@._V1_SX300.jpg"
                             alt="Joker"
                             className="poster-image" />
-                        <div className="rating-badge">⭐ 8.3</div>
+                        <div className="rating-badge">⭐{MovieDetails.imdbRating}</div>
                     </div>
 
                     <div className="info-section">
-                        <h1 className="movie-title">Joker</h1>
+                        <h1 className="movie-title">{MovieDetails.Title}</h1>
                         <div className="movie-tagline">
-                            <span className="tag">2019</span>
-                            <span className="tag rated">R</span>
-                            <span className="tag">122 min</span>
+                            <span className="tag">"{MovieDetails.Released}"</span>
+                            <span className="tag rated">"True"</span>
+                            <span className="tag">"{MovieDetails.Runtime}"</span>
                             <span className="tag">Crime, Drama, Thriller</span>
                         </div>
 
                         <div className="movie-meta">
                             <div className="meta-item">
                                 <span className="meta-label">Released:</span>
-                                <span className="meta-value">04 Oct 2019</span>
+                                <span className="meta-value">{MovieDetails.Released}</span>
                             </div>
                             <div className="meta-item">
                                 <span className="meta-label">Language:</span>
-                                <span className="meta-value">English, German</span>
+                                <span className="meta-value">{MovieDetails.Language}</span>
                             </div>
                             <div className="meta-item">
                                 <span className="meta-label">Country:</span>
                                 <span className="meta-value">
-                                    United States, Canada, Australia
-                                </span>
+                                    {MovieDetails.Country}                                </span>
                             </div>
                             <div className="meta-item">
                                 <span className="meta-label">IMDb ID:</span>
-                                <span className="meta-value">tt7286456</span>
+                                <span className="meta-value">{MovieDetails.imdbID}</span>
                             </div>
                         </div>
                     </div>
@@ -77,11 +76,7 @@ const MovieDetails = () => {
                     <div className="section">
                         <h2 className="section-title">Plot Summary</h2>
                         <p className="plot-text">
-                            Arthur Fleck, a party clown and a failed stand-up
-                            comedian, leads an impoverished life with his ailing
-                            mother. However, when society shuns him and brands
-                            him as a freak, he decides to embrace the life of
-                            chaos in Gotham City.
+                            {MovieDetails.plotSummary}
                         </p>
                     </div>
 
@@ -91,19 +86,19 @@ const MovieDetails = () => {
                             <div className="info-box">
                                 <div className="info-box-title">Director</div>
                                 <div className="info-box-content">
-                                    Todd Phillips
+                                    {MovieDetails.Director}
                                 </div>
                             </div>
                             <div className="info-box">
                                 <div className="info-box-title">Writer</div>
                                 <div className="info-box-content">
-                                    Todd Phillips, Scott Silver, Bob Kane
+                                    {MovieDetails.Writer}
                                 </div>
                             </div>
                             <div className="info-box">
                                 <div className="info-box-title">Actors</div>
                                 <div className="info-box-content">
-                                    Joaquin Phoenix, Robert De Niro, Zazie Beetz
+                                    {MovieDetails.Actors}
                                 </div>
                             </div>
                         </div>
@@ -112,20 +107,14 @@ const MovieDetails = () => {
                     <div className="section">
                         <h2 className="section-title">Ratings & Reviews</h2>
                         <div className="ratings-container">
-                            <div className="rating-box">
-                                <div className="rating-source">
-                                    Internet Movie Database
-                                </div>
-                                <div className="rating-value">8.3/10</div>
-                            </div>
-                            <div className="rating-box">
-                                <div className="rating-source">Rotten Tomatoes</div>
-                                <div className="rating-value">68%</div>
-                            </div>
-                            <div className="rating-box">
-                                <div className="rating-source">Metacritic</div>
-                                <div className="rating-value">59/100</div>
-                            </div>
+                            {MovieDetails.Ratings.map((el) => (
+                                <div className="rating-box">
+                                    <div className="rating-source">
+                                        {el.Source}
+                                        </div>
+                                        <div className="rating-value">{el.Value}</div>
+                                        </div>
+                            ))}
                         </div>
 
                         <div className="awards-box">
@@ -141,16 +130,19 @@ const MovieDetails = () => {
                         <div className="box-office-section">
                             <div className="box-office-card">
                                 <div className="box-office-label">Box Office</div>
-                                <div className="box-office-value">$335.5M</div>
+                                <div className="box-office-value">{MovieDetails.BoxOffice}</div>
                             </div>
                             <div className="box-office-card">
                                 <div className="box-office-label">IMDb Votes</div>
-                                <div className="box-office-value">1,637,986</div>
+                                <div className="box-office-value">{MovieDetails.imdbVotes}</div>
                             </div>
                         </div>
                     </div>
+
                 </div>
+
             </div>
+            }
         </div>
 
     )
